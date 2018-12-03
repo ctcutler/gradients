@@ -24,5 +24,15 @@ class Horizons2Test(unittest.TestCase):
         ]).reshape((3, 2, 3))
         np.testing.assert_equal(result, expected)
 
+    def test_gradient(self):
+        solid = horizons2.init_solid(2, 3, (0, 0, 255))
+        result = horizons2.gradient(solid, (0, 255, 0))
+        expected = np.array([
+            0, 0, 255, 0, 0, 255,
+            0, 127.5, 127.5, 0, 127.5, 127.5,
+            0, 255, 0, 0, 255, 0,
+        ]).reshape((3, 2, 3))
+        np.testing.assert_equal(result, expected)
+
 if __name__ == '__main__':
     unittest.main()

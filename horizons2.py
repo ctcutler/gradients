@@ -6,7 +6,7 @@ HEIGHT = int(9 * 100 * .6)
 
 
 def init_solid(width, height, rgb):
-    a = np.array(rgb, dtype=np.uint8)
+    a = np.array(rgb)
     tiled = np.tile(a, width * height)
     return np.reshape(tiled, (height, width, 3))
 
@@ -35,7 +35,15 @@ def gradient(a, rgb):
         - fill every row with its index/(height-1)
     - multiply these arrays together and add result to the original array
     """
-    pass
+    # FIXME: give this a good scrubbing
+    negated = np.copy(a) * -1
+    color_triples = negated.reshape(-1, 3)
+    deltas_flat = color_triples + rgb
+    deltas = np.reshape(deltas_flat, a.shape)
+    scale_factors = np.arange(a.shape[0]) / (a.shape[0] - 1)
+    scale_factors_flat = np.repeat(scale_factors, a.shape[1] * a.shape[2])
+    scale_factors_reshaped = np.reshape(scale_factors_flat, a.shape)
+    return a + (scale_factors_reshaped * deltas)
 
 def save_image(file_name, image_data):
     img = Image.fromarray(np.uint8(image_data), 'RGB')
@@ -44,5 +52,5 @@ def save_image(file_name, image_data):
 solid = init_solid(WIDTH, HEIGHT, [0, 255, 0])
 save_image('solid.png', solid)
 
-gradient = init_gradient(WIDTH, HEIGHT, [255, 255, 0], [0, 0, 255], np.linspace)
-save_image('gradient.png', gradient)
+g = gradient(solid, [0, 0, 255])
+save_image('gradient.png', g)
