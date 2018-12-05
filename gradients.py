@@ -12,6 +12,7 @@ def init_solid(width, height, rgb):
 
 def init_gradient(width, height, rgb1, rgb2, gradient_func):
     a = np.empty((height, width, 3))
+    # FIXME: refactor based on gradient() approach?
     for i in range(3):
         gradient = gradient_func(rgb1[i], rgb2[i], height)
         repeated = np.repeat(gradient, width)
