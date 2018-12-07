@@ -27,6 +27,13 @@ def gradient(a, rgb, scale_func):
 
     return a + scaled_deltas
 
+def noise(a, amount):
+    r = (np.random.rand(*a.shape) * amount * 2) - amount
+    noisy = r + a
+    upper_limit = np.repeat(255, a.size).reshape(a.shape)
+    lower_limit = np.repeat(0, a.size).reshape(a.shape)
+    return np.minimum(upper_limit, np.maximum(lower_limit, noisy))
+
 def save_image(file_name, image_data):
     img = Image.fromarray(np.uint8(image_data), 'RGB')
     img.save(file_name)
@@ -58,7 +65,8 @@ def main():
     gradient_bottom = gradient(bottom, yellow, color_scale)
     gradient_bottom_flipped = np.flipud(gradient_bottom)
     g = np.concatenate((gradient_top, gradient_bottom_flipped))
-    save_image('gradient.png', g)
+    g_noise = noise(g, 5)
+    save_image('gradient.png', g_noise)
 
 if __name__== "__main__":
     main()
