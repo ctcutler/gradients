@@ -31,17 +31,33 @@ def save_image(file_name, image_data):
     img = Image.fromarray(np.uint8(image_data), 'RGB')
     img.save(file_name)
 
+def color_scale(cur, total):
+    """
+    Goal is to make a certain proportion solid and do the gradient
+    only after/above that proportion.
+    """
+    proportion = .85
+
+    if cur >= total * proportion:
+        n = (cur - (total * proportion)) * \
+            (total/(total-(total*proportion)))
+        return float(n**2) / ((total - 1)**2)
+    else:
+        return 0
+
 def main():
-    def linear_scale(cur, total):
-        return float(cur) / (total - 1)
+    blue = (0, 65, 171)
+    yellow = (255, 232, 0)
 
-    def quadratic_scale(cur, total):
-        return float(cur**2) / ((total - 1)**2)
-
-    solid = init_solid(WIDTH, HEIGHT, [0, 255, 0])
+    solid = init_solid(WIDTH, HEIGHT, blue)
     save_image('solid.png', solid)
 
-    g = gradient(solid, [0, 0, 255], quadratic_scale)
+
+    (top, bottom) = np.split(solid, 2)
+    gradient_top = gradient(top, yellow, color_scale)
+    gradient_bottom = gradient(bottom, yellow, color_scale)
+    gradient_bottom_flipped = np.flipud(gradient_bottom)
+    g = np.concatenate((gradient_top, gradient_bottom_flipped))
     save_image('gradient.png', g)
 
 if __name__== "__main__":
