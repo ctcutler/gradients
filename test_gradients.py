@@ -45,5 +45,11 @@ class GradientsTest(unittest.TestCase):
         ]).reshape((3, 2, 3))
         np.testing.assert_equal(result, expected)
 
+    def test_smooth_rands(self):
+        result = gradients.smooth_rands(10, 0, 5, .5, 12345)
+        expected = np.array([2.164681, 2.081301, 1.59147, 1.916677, 1.715317,
+            1.583728, 1.27739, 1.343398, 1.005086, 0.629353])
+        np.testing.assert_allclose(result, expected, rtol=1e-05)
+
 if __name__ == '__main__':
     unittest.main()
